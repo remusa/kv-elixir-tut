@@ -19,7 +19,13 @@ defmodule KV.Bucket do
   Puts the `value` for the given `key` in the `bucket`.
   """
   def put(bucket, key, value) do
-    Agent.update(bucket, &Map.put(&1, key, value))
+    # Here is the clients code
+    Agent.update(bucket, fn state ->
+      # Here is the server code
+      Map.put(state, key, value)
+    end)
+
+    # Back to the client code
   end
 
   @doc """
@@ -29,7 +35,7 @@ defmodule KV.Bucket do
   """
   def delete(bucket, key) do
     Agent.get_and_update(bucket, fn dict ->
-        Map.pop(dict, key)
+      Map.pop(dict, key)
     end)
   end
 end
